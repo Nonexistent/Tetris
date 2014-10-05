@@ -53,13 +53,13 @@ public class Gui {
 	}
 	
 	public void drawBoard(Engine engine){
-		//Cell[][] grid = engine.accessGrid();
 		clearBoard();
-		graphics.setColor(Color.decode("#00A300"));
 		for(int i = 0; i < engine.accessGrid().length; i++){
 			for(int j = 0, end = engine.accessGrid()[i].length; j < end; j++){
 				if(engine.accessGrid()[i][j] != null){
-			graphics.fillRect((((int)engine.accessGrid()[i][j].getX()) * xIncrement)+2, ((21-(int)engine.accessGrid()[i][j].getY())*yIncrement)+2, REC_WIDTH, REC_WIDTH);
+				graphics.setColor(Color.decode(engine.accessGrid()[i][j].getColor()));
+				//NULL POINTER EXCEPTION BUG RARE/COMMON
+				graphics.fillRect((((int)engine.accessGrid()[i][j].getX()) * xIncrement)+2, ((21-(int)engine.accessGrid()[i][j].getY())*yIncrement)+2, REC_WIDTH, REC_WIDTH);
 				}
 			}
 		}
