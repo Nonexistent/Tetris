@@ -16,6 +16,7 @@ public class Brick implements KeyListener{
 		T(new Point(4, 20), new Point(5, 21), new Point(5, 20), new Point(6, 20));
 	
 		public Point[] points = new Point[4];
+		
 		Letter(Point... point){
 			for(int i = 0; i < points.length; i++){
 				points[i] = point[i];
@@ -31,29 +32,36 @@ public class Brick implements KeyListener{
 	private static final int SIZE = 4;
 	private static final Random RANDOM = new Random();
 	private Engine engine;
-	private Point[] points;
+	private Point[] points = new Cell[SIZE];
 	private static final int[][] MATRIX = {{0, 1}, {-1, 0}};
 	
 	public Brick(Engine engine){
-		this.points = LIST[RANDOM.nextInt(LIST.length)].getPoints();
+		Point[] temp = LIST[RANDOM.nextInt(LIST.length)].getPoints();
+		for(int i = 0; i < SIZE; i++){
+			points[i] = new Cell(temp[i].x, temp[i].y);
+		}
 		this.engine = engine;
-		engine.appendCells(points);
+		removeCells();
+		setCells();
 	}
 	
 	public boolean down(){
+		removeCells();
 		for(Point p : points){
-			if(p.y == 0){
+			if(p.y == 0 || engine.accessGrid()[p.x][p.y - 1] != null){
+				setCells();
 			return false;
 			}
 		}
 		for(Point p : points){
 			p.y -= 1;
 		}
-		engine.appendCells(points);
+		setCells();
 		return true;
 	}
 	
 	public boolean right(){
+		removeCells();
 		for(Point p : points){
 			if(p.x == 9){
 			return false;
@@ -62,24 +70,27 @@ public class Brick implements KeyListener{
 		for(Point p : points){
 			p.x += 1;
 		}
-		engine.appendCells(points);
+		setCells();
 		return true;
 	}
 	
+	//flashes, bug
 	public boolean left(){
+		removeCells();
 		for(Point p : points){
-			if(p.x == 0){
+			if(p.x == 0 || engine.accessGrid()[p.x - 1][p.y] != null){
 			return false;
 			}
 		}
 		for(Point p : points){
 			p.x -= 1;
 		}
-		engine.appendCells(points);
+		setCells();
 		return true;
 	}
 	
 	public boolean rotate(){
+		removeCells();
 		//index 2 will be point of origin
 		int offsetX = points[2].x;
 		int offsetY = points[2].y;
@@ -98,7 +109,7 @@ public class Brick implements KeyListener{
 			points[i].x = tempPoints[i].x;
 			points[i].y = tempPoints[i].y;
 		}
-		engine.appendCells(points);
+		setCells();
 		return true;
 	}
 	
@@ -109,13 +120,16 @@ public class Brick implements KeyListener{
 		return true;
 	}
 	
-	public boolean isAlive(){
-		for(Point p : points){
-			if(p.y == 0){
-				return false;
-			}
+	private synchronized void setCells(){
+		for(Point c : points){
+			engine.accessGrid()[c.x][c.y] = (Cell) c;
 		}
-		return true;
+	}
+	
+	private synchronized void removeCells(){
+		for(Point c : points){
+			engine.accessGrid()[c.x][c.y] = null;
+		}
 	}
 
 	@Override

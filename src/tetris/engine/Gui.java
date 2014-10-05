@@ -24,7 +24,7 @@ public class Gui {
 	
 	public Gui(){
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		clearBoard();
+		createBoard();
 		panel.add(label);
 		frame.add(panel);
 		frame.pack();
@@ -33,13 +33,16 @@ public class Gui {
 		frame.setVisible(true);
 	}
 	
-	private void clearBoard(){
+	private void createBoard(){
 		board = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		graphics = (Graphics2D) board.getGraphics();
+		clearBoard();
+	}
+	
+	public void clearBoard(){
 		board.getGraphics().setColor(Color.WHITE);
 		board.getGraphics().fillRect(0, 0, board.getWidth(), board.getHeight());
 		graphics.setColor(Color.decode("#d3d3d3"));
-		//graphics.setColor(Color.BLACK);
 		for(int i = 0; i < WIDTH; i += xIncrement){
 			graphics.drawLine(i, 0, i, HEIGHT);
 		}
@@ -49,11 +52,16 @@ public class Gui {
 		label.setIcon(new ImageIcon(board));
 	}
 	
-	public void drawBoard(Point... brick){
+	public void drawBoard(Engine engine){
+		//Cell[][] grid = engine.accessGrid();
 		clearBoard();
 		graphics.setColor(Color.decode("#00A300"));
-		for(Point c : brick){
-			graphics.fillRect((((int)c.x) * xIncrement)+2, ((21-(int)c.y)*yIncrement)+2, REC_WIDTH, REC_WIDTH);
+		for(int i = 0; i < engine.accessGrid().length; i++){
+			for(int j = 0, end = engine.accessGrid()[i].length; j < end; j++){
+				if(engine.accessGrid()[i][j] != null){
+			graphics.fillRect((((int)engine.accessGrid()[i][j].getX()) * xIncrement)+2, ((21-(int)engine.accessGrid()[i][j].getY())*yIncrement)+2, REC_WIDTH, REC_WIDTH);
+				}
+			}
 		}
 	}
 	

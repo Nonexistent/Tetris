@@ -15,6 +15,6 @@ public class Tetris {
 	public static void main(String[] args) {
 		Gui gui = new Gui();
 		Engine engine = new Engine(gui);
-		engine.run();
+		engine.loop();
 	}
 }
