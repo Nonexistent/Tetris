@@ -1,6 +1,6 @@
 package tetris.engine;
 
-import java.awt.Point;
+import java.awt.event.KeyEvent;
 
 public class Engine {
 	// 10 cells wide
@@ -8,51 +8,46 @@ public class Engine {
 	private static final int ROW = 21;
 	private static final int COLUMN = 9;
 	private Cell[][] grid = new Cell[COLUMN + 1][ROW + 1];
-	private Point[] prevPoints = new Point[4];
 	Brick brick;
 	Gui gui;
+	private boolean gameIsAlive = false;
 
 	public Engine(Gui gui) {
 		this.gui = gui;
-		/*for (int i = 0; i <= COLUMN; i++) {
-			for (int j = 0; j <= ROW; j++) {
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
 				grid[i][j] = new Cell(i, j);
 			}
-		}*/
+		}
 		brick = new Brick(this);
 		gui.addListener(brick);
 	}
 
 	public void loop() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(26);
-						gui.drawBoard(Engine.this);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
-
-		while (true) {
-			if (!brick.down()) {
-				gui.removeListener(brick);
-				brick = new Brick(this);
-				gui.addListener(brick);
-			}
+		gameIsAlive = brick.createBrick();
+		while (gameIsAlive) {
 			try {
 				Thread.sleep(1000);
-			} catch (Exception e) {
-
+				update();
+				repaint();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
-	
-	public synchronized Cell[][] accessGrid(){
+
+	private void update() {
+		if (!brick.moveController(KeyEvent.VK_DOWN)) {
+			brick.clearRow();
+			gameIsAlive = brick.createBrick();
+		}
+	}
+
+	public void repaint() {
+		gui.drawBoard(this);
+	}
+
+	public Cell[][] getGrid() {
 		return grid;
 	}
 }

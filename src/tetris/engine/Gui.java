@@ -2,7 +2,6 @@ package tetris.engine;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
@@ -54,13 +53,13 @@ public class Gui {
 	
 	public void drawBoard(Engine engine){
 		clearBoard();
-		for(int i = 0; i < engine.accessGrid().length; i++){
-			for(int j = 0, end = engine.accessGrid()[i].length; j < end; j++){
-				if(engine.accessGrid()[i][j] != null){
-				graphics.setColor(Color.decode(engine.accessGrid()[i][j].getColor()));
-				//NULL POINTER EXCEPTION BUG RARE/COMMON
-				graphics.fillRect((((int)engine.accessGrid()[i][j].getX()) * xIncrement)+2, ((21-(int)engine.accessGrid()[i][j].getY())*yIncrement)+2, REC_WIDTH, REC_WIDTH);
-				}
+		for(int i = 0; i < engine.getGrid().length; i++){
+			for(int j = 0, end = engine.getGrid()[i].length; j < end; j++){
+				if(engine.getGrid()[i][j].isOccupied()){
+				graphics.setColor(Color.decode(engine.getGrid()[i][j].getColor()));
+				graphics.fillRect((((int)engine.getGrid()[i][j].getX()) * xIncrement)+2, ((21-(int)engine.getGrid()[i][j].getY())*yIncrement)+2, REC_WIDTH, REC_WIDTH);
+					
+					}
 			}
 		}
 	}
