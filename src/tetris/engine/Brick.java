@@ -160,9 +160,11 @@ public class Brick implements KeyListener {
 	}
 	
 	//RETURN POINTS
-	public void clearRow() {
+	public int clearRow(int multiplier) {
 		Cell[][] temp = engine.getGrid();
-		outter: for (int i = 0; i < temp[0].length; i++) {
+		int score = 0;
+		outter: 
+		for (int i = 0; i < temp[0].length; i++) {
 			for (int j = 0; j < temp.length; j++) {
 				if (!temp[j][i].isOccupied()) {
 					continue outter;
@@ -170,6 +172,7 @@ public class Brick implements KeyListener {
 			}
 			for (int j = 0; j < temp.length; j++) {
 				temp[j][i].setOccupied(false);
+				score = multiplier * 40;
 			}
 			for (int c = 0; c < temp.length; c++) {
 				for (int r = i; r < temp[0].length; r++) {
@@ -181,8 +184,9 @@ public class Brick implements KeyListener {
 					}
 				}
 			}
-			clearRow();
+			score += clearRow(multiplier + 1);
 		}
+		return score;
 	}
 
 	@Override

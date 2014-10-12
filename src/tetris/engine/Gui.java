@@ -5,14 +5,18 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Gui {
 	private final JFrame frame = new JFrame("Tetris");
 	private final JPanel panel = new JPanel();
+	private final JPanel scorePanel = new JPanel();
+	private final JTextField score = new JTextField(7);
 	private final JLabel label = new JLabel();
 	private BufferedImage board;
 	private Graphics2D graphics;
@@ -24,8 +28,17 @@ public class Gui {
 	public Gui(){
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		createBoard();
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		scorePanel.add(new JLabel("Score: "));
+		score.setText("0");
+		score.setEditable(false);
+		scorePanel.add(score);
 		panel.add(label);
-		frame.add(panel);
+		mainPanel.add(scorePanel);
+		mainPanel.add(panel);
+		mainPanel.add(new JLabel("By Nonexistent"));
+		frame.add(mainPanel);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
@@ -48,6 +61,8 @@ public class Gui {
 		for(int i = 0; i < HEIGHT; i += yIncrement){
 			graphics.drawLine(0, i, WIDTH, i);
 		}
+		
+		//revise
 		label.setIcon(new ImageIcon(board));
 	}
 	
@@ -64,9 +79,13 @@ public class Gui {
 		}
 	}
 	
+	public void setScore(int i){
+		score.setText(Integer.toString(Integer.parseInt(score.getText()) + i));
+	}
+	
 	public void addListener(KeyListener k){
 		panel.setFocusable(true);
-		//panel.requestFocusInWindow();
+		panel.requestFocusInWindow();
 		panel.addKeyListener(k);
 	}
 	

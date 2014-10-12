@@ -38,7 +38,7 @@ public class Engine {
 
 	private void update() {
 		if (!brick.moveController(KeyEvent.VK_DOWN)) {
-			brick.clearRow();
+			gui.setScore(brick.clearRow(1));
 			gameIsAlive = brick.createBrick();
 		}
 	}
