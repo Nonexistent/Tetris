@@ -8,7 +8,7 @@ using namespace std;
 /*
 * Author: Nonexistent
 * Creation Date: December 24th, 2014
-* Last Update: December 25th, 2014
+* Last Update: December 26th, 2014
 *
 */
 
@@ -93,7 +93,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	PAINTSTRUCT ps;
 	switch(msg) {
 	case WM_SIZE:
-		if(wParam == SIZE_MINIMIZED){
+		if(wParam == SIZE_RESTORED){
 			drawGrid = true;
 		}
 		break;
@@ -193,7 +193,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	WNDCLASSEX wc;
 	HWND hwnd;
 	MSG msg;
-
+	
+	memset(&msg, 0, sizeof(msg));
+	
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = 0;
 	wc.lpfnWndProc = WndProc;
@@ -260,6 +262,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if(PeekMessage (&msg, NULL, 0, 0, PM_REMOVE) > 0){
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+			if(msg.message == WM_QUIT) return 0;
 		}
 	}
 	while(GetMessage(&msg, NULL, 0, 0) > 0)
@@ -285,7 +288,7 @@ bool withinBounds(int x, int y){
 }
 
 bool createBrick(){
-	Cell temp[4] = defaultBricks[rand() % 7];
+	const Cell* temp = defaultBricks[rand() % 7];
 	COLORREF color = colors[rand() % 7];
 	for(int i = 0; i < 4; i++){
 		if(grid[temp[i].x][temp[i].y].isOccupied()){
